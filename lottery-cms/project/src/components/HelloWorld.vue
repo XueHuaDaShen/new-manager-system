@@ -14,7 +14,7 @@
               @select="handleSelect"
               active-text-color="#ffd04b">
               <el-submenu index="1">
-                <template slot="title">
+                <template slot="title" style="display:-webkit-box;">
                   <i class="el-icon-location"></i>
                   <span>首页首页首页</span>
                 </template>
@@ -119,12 +119,28 @@ export default {
           }
         });
       }
-      
+      var name = tabs.filter(tab => tab.name === targetName )[0].title;
+      this.routerArr = this.routerArr.filter(title => name !== title )
       this.editableTabsValue = activeName;
       this.editableTabs = tabs.filter(tab => tab.name !== targetName);
     },
     handleClick(index){
       this.$router.push({name: index.label})
+    }
+  },
+  mounted() {
+    var cl = document.getElementsByClassName('el-submenu__title');
+    this.$message({
+      message: 'The request is successful',
+      type: 'success',
+      duration: 1000
+    })
+    try{
+      for(var i in cl){
+        cl[i].style.display = '-webkit-box';
+      }
+    }catch(e){
+      // console.log(e);
     }
   }
 }

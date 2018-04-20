@@ -102,6 +102,7 @@ export default {
                 if (valid) {
                     vm.loading = true;
                     request.login(
+                        vm,
                         'get',
                         '/user/random',
                         {
@@ -112,6 +113,7 @@ export default {
                                 let salt = success.data.salt;
                                 let new_password = CryptoJS.HmacMD5(CryptoJS.MD5(vm.loginForm.password).toString(), salt).toString();
                                 request.login(
+                                    vm,
                                     'post',
                                     '/user/login',
                                     {
@@ -120,17 +122,16 @@ export default {
                                     },
                                     (success)=>{
                                         let code = success.returncode;
+                                        vm.loading = false;
                                         if (code == '304') {
                                             vm.isLoginError = true;
                                             vm.loginStatus = '用户不存在';
-                                            vm.loading = false;
                                             setTimeout(function(){
                                                 vm.isLoginError = false;
                                                 vm.loginStatus = '';
                                             },2000)
                                         } else if (code == '305') {
                                             vm.isLoginError = true;
-                                            vm.loading = false;
                                             vm.loginStatus = '密码错误';
                                             setTimeout(function(){
                                                 vm.isLoginError = false;
@@ -140,14 +141,12 @@ export default {
                                             vm.getToken(success.data.bearer, vm.loginForm.username);
                                         } else if (code == '306') {
                                             vm.isLoginError = true;
-                                            vm.loading = false;
                                             vm.loginStatus = '您的账号被禁止登陆，请联系管理员';
                                             setTimeout(function(){
                                                 vm.isLoginError = false;
                                                 vm.loginStatus = '';
                                             },2000)
                                         } else {
-                                            vm.loading = false;
                                             request.handleLogOut(code, vm);
                                         }
                                     },
@@ -182,23 +181,25 @@ export default {
                 "authorization": bearer
             };
             request.http(
+                vm,
                 'get',
                 '/authorise',
                 {},
                 (success)=>{
                     if( success.returncode == 200 ){
                         request.login(
+                            vm,
                             'post',
                             '/oauth/token',
                             {
                                 code: success.data.code
                             },
                             (success)=>{
+                                vm.loading = false;
                                 if( success.returncode == 200 ){
                                     localStorage.setItem('A-TOKEN', success.data.access_token);
                                     localStorage.setItem('R-TOKEN', success.data.refresh_token);
                                     localStorage.setItem('USERNAME', username);
-                                    vm.loading = false;
                                     vm.$router.push({path:'/HelloWorld'})
                                 }
                                 // console.log('/oauth/token---success', success)

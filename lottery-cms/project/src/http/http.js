@@ -9,7 +9,11 @@ const refreshReq = request.create({
     baseURL: Config.login
 });
 export default {
-    http(method, url, params, callback, fallback, headers){
+    http(method, url, params, callback, fallback){
+        const that = this;
+        var headers = {
+            token: localStorage.getItem('A-TOKEN')
+        };
         var o = {};
         if(method == 'get'){
             o = {
@@ -28,15 +32,13 @@ export default {
         }
         request(o).then((res) => {
             let result = res.data;
-            let code = result.returncode;
-            if( code == 200 ){
-                callback(result)
-            }else{
-                fallback(result)
-            }
+            callback(result)
+        }).catch(error => {
+            fallback(error)
         })
     },
     login(method, url, params, callback, fallback, headers){
+        const that = this;
         var o = {};
         if(method == 'get'){
             o = {
@@ -55,16 +57,14 @@ export default {
         }
         loginReq(o).then((res) => {
             let result = res.data;
-            let code = result.returncode;
-            if( code == 200 ){
-                callback(result)
-            }else{
-                fallback(result)
-            }
+            callback(result);
+        }).catch(error => {
+            fallback(error);
         })
     },
-    refresh(that, refresh_token, callback){
-
+    refresh(vm, callback){
+        const that = this;
+        var R_TOKEN = localStorage.getItem('R-TOKEN');
         refreshReq({
             url: '/oauth/refreshToken',
             data: {
@@ -75,46 +75,47 @@ export default {
             let result = res.data;
             let code = result.returncode;
             if (code == '200') {
+                that.requestSuccess(vm);
                 localStorage.setItem('A-TOKEN', result.data.access_token);
                 localStorage.setItem('R-TOKEN', result.data.refresh_token);
-                that.$store.state.A_TOKEN = result.data.access_token;
-                that.$store.state.R_TOKEN = result.data.refresh_token;
+                vm.$store.state.A_TOKEN = result.data.access_token;
+                vm.$store.state.R_TOKEN = result.data.refresh_token;
                 callback();
             } else if (code == '301') {
                 localStorage.removeItem('A-TOKEN');
                 localStorage.removeItem('R-TOKEN');
-                // that.$router.push('/user');
+                // vm.$router.push('/user');
             } else if (code == '304') {
                 // debugger;
                 localStorage.removeItem('A-TOKEN');
                 localStorage.removeItem('R-TOKEN');
                 localStorage.removeItem('USERNAME');
-                that.$router.push('/login');
+                vm.$router.push('/login');
             }
         }).catch(function (error) {
             localStorage.removeItem('A-TOKEN');
             localStorage.removeItem('R-TOKEN');
             localStorage.removeItem('USERNAME');
-            that.$router.push('/login');
+            vm.$router.push('/login');
         });
     },
 
-    loginAgain(that) {
+    loginAgain(vm) {
         localStorage.removeItem('A-TOKEN');
         localStorage.removeItem('R-TOKEN');
         localStorage.removeItem('USERNAME');
-        that.$router.push('/login');
+        vm.$router.push('/login');
     },
 
-    handlerErr(that, code, func) {
+    handlerErr(vm, code, func) {
         var suc = false;
         if(code) {
             if(code == 304 || code == 102 || code == 106) {
-                this.loginAgain(that);
+                this.loginAgain(vm);
             }else if(code == 104 || code == 103 ){
-                this.refresh(that, that.$store.state.R_TOKEN, func)
+                this.refresh(vm, func)
             }else if(code == 303){
-                that.$message({
+                vm.$message({
                     message: '服务器内部错误',
                     type: 'error',
                     duration: 1000
@@ -125,7 +126,7 @@ export default {
                 console.log('returncode-----' + code);
             }
         }else{
-            that.$message({
+            vm.$message({
                 message: '请求服务异常',
                 type: 'error',
                 duration: 1000
@@ -134,24 +135,24 @@ export default {
         return suc;
     },
 
-    handleLogOut(code, that) {
+    handleLogOut(code, vm) {
         // console.log(code)
         if (code == 102 || code == 106 || code == 101 || code == 304) {
             console.log('code:',code)
-            this.loginAgain(that)
+            this.loginAgain(vm)
         } else if( code == 303 ){
-            that.$message({
+            vm.$message({
                 message: '服务器内部错误',
                 type: 'error',
                 duration: 1000
             })
         } else if (code == 109) {
-            that.$message({
+            vm.$message({
                 message: '此账号不具有相应的权限，请重新登录！',
                 type: 'error',
                 duration: 1000
             })
-            this.loginAgain(that)
+            this.loginAgain(vm)
         }
     }
 }

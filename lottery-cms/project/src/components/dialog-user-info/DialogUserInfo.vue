@@ -2,7 +2,7 @@
   <div class="dialog-user-info">
     <div class="dialog-bj"></div>
     <div class="dialog-content">
-        <i class="el-icon-close dialog-close"></i>
+        <i class="el-icon-close dialog-close" @click="handleCloseClick"></i>
         <div class="dialog-title">查看用户资料</div>
         <div class="user-info-title">
             <div class="user-status" @click="handleClickUserStatus('ziliao')" :class="ziliao?'user-status-active':''">
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="user-info-content">
-            <statusziliao :ziliao="data" v-if="ziliao"></statusziliao>
+            <statusziliao @dialogShow="handleDialogShow" style="width:100%;height:100%;" :ziliao="data" v-if="ziliao"></statusziliao>
             <statusxinxi v-if="xinxi"></statusxinxi>
             <statusjilu v-if="jilu"></statusjilu>
             <statuszijin v-if="zijin"></statuszijin>
@@ -113,6 +113,12 @@ export default {
         handleClickUserStatus(ref) {
             this.setUserInfoStatus(ref);
         },
+        handleCloseClick() {
+            this.$emit('closeDialog', false);
+        },
+        handleDialogShow(val) {
+            this.$emit('sendDiglogShow', val);
+        },
         setUserInfoStatus(ref) {
             this.ziliao = false;
             this.xinxi = false;
@@ -135,7 +141,7 @@ export default {
             data.name = "ziliao";
             data.type = "daili";
             this.data = data;
-            request.http('get', '/treasure/winner/list', {"page": 1,"size": 10}, 'callback', 'fallback');
+            // request.http('get', '/treasure/winner/list', {"page": 1,"size": 10}, 'callback', 'fallback');
         },
     },
     mounted() {
@@ -244,6 +250,7 @@ export default {
   .dialog-user-info .user-info-content{
     -webkit-box-flex:1;
     background:#fff;
+    overflow-y: auto;
   }
 </style>
 
