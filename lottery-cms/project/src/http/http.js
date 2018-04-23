@@ -9,11 +9,9 @@ const refreshReq = request.create({
     baseURL: Config.login
 });
 export default {
-    http(method, url, params, callback, fallback){
+    http(method, url, params, callback, fallback, headers){
         const that = this;
-        var headers = {
-            token: localStorage.getItem('A-TOKEN')
-        };
+        var headers = headers || { token: localStorage.getItem('A-TOKEN') };
         var o = {};
         if(method == 'get'){
             o = {

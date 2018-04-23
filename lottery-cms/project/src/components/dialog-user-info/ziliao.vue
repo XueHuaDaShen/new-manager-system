@@ -53,18 +53,18 @@
         </tr>
         <tr>
           <td colspan="2">
-            <switchbar :data="lockStatus"></switchbar>
+            <switchbar :data="lockStatus" @switchCheck="handleSwitchCheck"></switchbar>
           </td>
         </tr>
         <tr>
           <td colspan="2">
-            <switchbar :data="abilityOpen"></switchbar>
+            <switchbar :data="abilityOpen" @switchCheck="handleSwitchCheck"></switchbar>
           </td>
         </tr>
         <tr>
           <td colspan="2">
             <label>层级关系：</label><span style="color:#F56C6C">{{nexus}}</span>
-            <el-button class="table-float" type="primary" size="small" round>修改上级</el-button>
+            <el-button class="table-float" type="primary" size="small" round @click="handleEditUp">修改上级</el-button>
           </td>
         </tr>
         <tr>
@@ -133,12 +133,14 @@
         </tr>
       </tbody>
     </table>
+    <dialogEditUp v-if="dialogEditUpModel" @closeDialog="handleCloseDialog"></dialogEditUp>
   </div>
 </template>
 <script>
 import tableInput from '../littleStyle/tableInput.vue';
 import tableBtn from '../littleStyle/tableBtn.vue';
 import switchbar from '../littleStyle/switchbar.vue';
+import dialogEditUp from './dialogEditUp.vue';
 export default {
   name: 'ziliao',
   props: {
@@ -154,10 +156,12 @@ export default {
     tableInput,
     tableBtn,
     switchbar,
+    dialogEditUp,
   },
   data() {
     return {
       data: this.ziliao,
+      dialogEditUpModel: false,
       isCeshi: false,
       lockStatus: {
         title: '锁定状态(正常)：',
@@ -215,6 +219,15 @@ export default {
         case 0: return '未设置';
         case 1: return '已设置';
       }
+    },
+    handleEditUp() {
+      this.dialogEditUpModel = true;
+    },
+    handleCloseDialog() {
+      this.dialogEditUpModel = false;
+    },
+    handleSwitchCheck(data) {
+      // console.log(data)
     }
   }
 }

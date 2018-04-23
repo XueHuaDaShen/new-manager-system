@@ -102,7 +102,6 @@ export default {
                 if (valid) {
                     vm.loading = true;
                     request.login(
-                        vm,
                         'get',
                         '/user/random',
                         {
@@ -113,7 +112,6 @@ export default {
                                 let salt = success.data.salt;
                                 let new_password = CryptoJS.HmacMD5(CryptoJS.MD5(vm.loginForm.password).toString(), salt).toString();
                                 request.login(
-                                    vm,
                                     'post',
                                     '/user/login',
                                     {
@@ -122,7 +120,6 @@ export default {
                                     },
                                     (success)=>{
                                         let code = success.returncode;
-                                        vm.loading = false;
                                         if (code == '304') {
                                             vm.isLoginError = true;
                                             vm.loginStatus = '用户不存在';
@@ -181,14 +178,12 @@ export default {
                 "authorization": bearer
             };
             request.http(
-                vm,
                 'get',
                 '/authorise',
                 {},
                 (success)=>{
                     if( success.returncode == 200 ){
                         request.login(
-                            vm,
                             'post',
                             '/oauth/token',
                             {
