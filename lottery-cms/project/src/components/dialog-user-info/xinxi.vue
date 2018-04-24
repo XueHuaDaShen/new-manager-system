@@ -101,6 +101,10 @@ export default {
         vm.subLoading = true;
         setTimeout(function(){
           vm.subLoading = false;
+          vm.dataLoading = true;
+          setTimeout(function(){
+            vm.dataLoading = false;
+          },1000)
         },1000)
       }
     },

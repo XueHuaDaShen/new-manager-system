@@ -5,23 +5,17 @@
         <div class="jilu-search-time">
           <el-date-picker
             v-model="time1"
+            type="daterange"
             align="right"
-            type="date"
-            placeholder="选择日期"
-            :picker-options="pickerOptions1">
-          </el-date-picker>
-        </div>
-        <div class="jilu-search-time">
-          <el-date-picker
-            v-model="time2"
-            align="right"
-            type="date"
-            placeholder="选择日期"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             :picker-options="pickerOptions1">
           </el-date-picker>
         </div>
         <div class="jilu-search-keyWord">
-          <el-input v-model="keyWord" placeholder="请输入内容"></el-input>
+          <el-input v-model="keyWord" placeholder="关键词"></el-input>
         </div>
         <div class="jilu-search-select">
           <el-select v-model="type" placeholder="请选择">
@@ -99,27 +93,29 @@ export default {
   data() {
     return {
       pickerOptions1: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
         shortcuts: [{
-          text: '今天',
+          text: '最近一周',
           onClick(picker) {
-            picker.$emit('pick', new Date());
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
           }
         }, {
-          text: '昨天',
+          text: '最近一个月',
           onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24);
-            picker.$emit('pick', date);
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
           }
         }, {
-          text: '一周前',
+          text: '最近三个月',
           onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', date);
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
           }
         }]
       },
@@ -180,7 +176,8 @@ export default {
       keyWord: '',
       time1: '',
       time2: '',
-      type: ''
+      type: '',
+      dataLoading: false,
     }
   },
   methods: {
@@ -202,7 +199,7 @@ export default {
     width:auto;
   }
   .jilu-search-term>.jilu-search-keyWord, .jilu-search-term>.jilu-search-select{
-    width:12%;
+    width:18%;
   }
   .jilu-search-term>.jilu-search-btn{
     width:auto;
