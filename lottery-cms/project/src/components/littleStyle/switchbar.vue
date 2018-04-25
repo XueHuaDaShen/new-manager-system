@@ -1,7 +1,7 @@
 <template>
     <div>
         <label>{{data.title}}</label>
-        <div v-for="(item, index) in data.data" style="display:inline">
+        <div v-for="(item, index) in data.data" :key="index" style="display:inline">
             <el-switch
                 style="margin-right:2.2rem"
                 active-color="#13ce66"

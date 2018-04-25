@@ -49,7 +49,7 @@
           <el-tabs v-model="editableTabsValue" @tab-click="handleClick" type="card" closable @edit="handleTabsremove">
             <el-tab-pane
               :key="item.name"
-              v-for="(item, index) in editableTabs"
+              v-for="(item) in editableTabs"
               :label="item.title"
               :name="item.name"
             >
