@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" onselectstart="return false;">
     <router-view/>
   </div>
 </template>
@@ -17,10 +17,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  width:100%;
+  height:100%;
 }
 html,body{
   width:100%;
   height:100%;
+  background:#2d3236;
 }
 *{
   margin:0;
