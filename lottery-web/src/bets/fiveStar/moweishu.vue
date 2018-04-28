@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="balls-wrap" v-for="(item, index) in ballsNumber" :key="index">
-      <strong class="balls-title">{{item.title}}</strong>
+      <strong class="balls-title" :style="showTitle?'opacity:0':''">{{item.title}}</strong>
       <b class="balls-number" :class="item.data.indexOf(i)>-1?'balls-number-active':''" @click="handleClickBalls(item, i)" v-for="(k, i) in balls" :key="k">{{i}}</b>
       <div class="balls-oprate">
         <em v-for="(oprate, oi) in oprateArr" @click="handleClickOprate(item, oprate.type, oi)" :key="oi">{{oprate.title}}</em>
@@ -15,15 +15,15 @@
 <script>
 import lottery from '../../../static/lottery';
 export default {
-  name: 'compound',
+  name: 'moweishu',
   props: {
     ballsNumber: {
       type: Array,
       required: true
     },
-    betsType: {
-      type: String,
-      required: true
+    showTitle: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -76,14 +76,11 @@ export default {
     },
     setBetsMoney() {
       const ballsArr = [];
-      for(var i in this.ballsNumber){
-        ballsArr.push(this.ballsNumber[i].data.length);
+      const vm = this;
+      for(var i in this.ballsNumber[0].data){
+        ballsArr.push(this.ballsNumber[0].data[i]);
       }
-      if( this.betsType === 'compound' ){
-        this.bets = lottery.compound(ballsArr);
-      }else if( this.betsType === 'group' ){
-        this.bets = lottery.group(ballsArr);
-      }
+      this.bets = ballsArr.length;
       this.money = this.bets * this.price;
     }
   },

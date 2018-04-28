@@ -15,14 +15,14 @@
 <script>
 import lottery from '../../../static/lottery';
 export default {
-  name: 'compound',
+  name: 'groupSelect60',
   props: {
     ballsNumber: {
       type: Array,
       required: true
     },
-    betsType: {
-      type: String,
+    ballsCount: {
+      type: Number,
       required: true
     }
   },
@@ -75,15 +75,16 @@ export default {
       this.setBetsMoney();
     },
     setBetsMoney() {
-      const ballsArr = [];
-      for(var i in this.ballsNumber){
-        ballsArr.push(this.ballsNumber[i].data.length);
+      const ballsArr1 = [];
+      const ballsArr2 = [];
+      const vm = this;
+      for(var i in this.ballsNumber[0].data){
+        ballsArr1.push(this.ballsNumber[0].data[i]);
       }
-      if( this.betsType === 'compound' ){
-        this.bets = lottery.compound(ballsArr);
-      }else if( this.betsType === 'group' ){
-        this.bets = lottery.group(ballsArr);
+      for(var i in this.ballsNumber[1].data){
+        ballsArr2.push(this.ballsNumber[1].data[i]);
       }
+      this.bets = lottery.groupSelectTwoNum(ballsArr1, ballsArr2, vm.ballsCount)
       this.money = this.bets * this.price;
     }
   },
@@ -130,6 +131,7 @@ export default {
 }
 .balls-title{
   color:#555;
+  max-width:72px;
   padding:5px 20px;
 }
 .balls-oprate{

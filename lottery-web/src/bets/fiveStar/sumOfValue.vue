@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div class="balls-wrap" v-for="(item, index) in ballsNumber" :key="index">
-      <strong class="balls-title">{{item.title}}</strong>
-      <b class="balls-number" :class="item.data.indexOf(i)>-1?'balls-number-active':''" @click="handleClickBalls(item, i)" v-for="(k, i) in balls" :key="k">{{i}}</b>
+    <div v-for="(item, index) in ballsNumber" :key="index">
+      <div class="sum-of-value-wrap">
+        <b class="balls-number" v-if="leopard?true:(i>0&&i<27)" :class="item.data.indexOf(i)>-1?'balls-number-active':''" @click="handleClickBalls(item, i)" v-for="(k, i) in balls" :key="k">{{i}}</b>
+      </div>
       <div class="balls-oprate">
         <em v-for="(oprate, oi) in oprateArr" @click="handleClickOprate(item, oprate.type, oi)" :key="oi">{{oprate.title}}</em>
       </div>
@@ -15,7 +16,7 @@
 <script>
 import lottery from '../../../static/lottery';
 export default {
-  name: 'compound',
+  name: 'sumOfValue',
   props: {
     ballsNumber: {
       type: Array,
@@ -24,11 +25,15 @@ export default {
     betsType: {
       type: String,
       required: true
+    },
+    leopard: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
-      balls: new Array(10),
+      balls: new Array(28),
       oprateArr: [
         {title: '全', type: 'all'},
         {title: '大', type: 'large'},
@@ -58,31 +63,43 @@ export default {
       this.setBetsMoney();
     },
     handleClickOprate(item, type) {
-      switch(type) {
-        case 'all': item.data = [0,1,2,3,4,5,6,7,8,9];
-        break;
-        case 'large': item.data = [5,6,7,8,9];
-        break;
-        case 'small': item.data = [0,1,2,3,4];
-        break;
-        case 'odd': item.data = [1,3,5,7,9];
-        break;
-        case 'even': item.data = [0,2,4,6,8];
-        break;
-        case 'clean': item.data = [];
-        break;
+      var len = 28
+      item.data = [];
+      for(var i=0; i<len; i++){
+        if(type === 'all'){
+          item.data.push(i)
+        }else if(type === 'large'){
+          if(i > (len/2 -1) ){
+            item.data.push(i)
+          }
+        }else if(type === 'small'){
+          if(i < len/2 ){
+            item.data.push(i)
+          }
+        }else if(type === 'odd'){
+          if(i % 2 === 0){
+            item.data.push(i)
+          }
+        }else if(type === 'even'){
+          if(i % 2 != 0){
+            item.data.push(i)
+          }
+        }else if(type === 'clean'){
+          item.data = [];
+        }
       }
       this.setBetsMoney();
     },
     setBetsMoney() {
       const ballsArr = [];
-      for(var i in this.ballsNumber){
-        ballsArr.push(this.ballsNumber[i].data.length);
+      const vm = this;
+      for(var i in this.ballsNumber[0].data){
+        ballsArr.push(this.ballsNumber[0].data[i]);
       }
-      if( this.betsType === 'compound' ){
-        this.bets = lottery.compound(ballsArr);
-      }else if( this.betsType === 'group' ){
-        this.bets = lottery.group(ballsArr);
+      if(vm.leopard){
+        this.bets = lottery.sunOfValue(ballsArr);
+      }else{
+        this.bets = lottery.groupSunOfValue(ballsArr);
       }
       this.money = this.bets * this.price;
     }
@@ -92,14 +109,13 @@ export default {
   }
 }
 </script>
+
 <style scoped>
-.balls-wrap{
-  display:-webkit-box;
-  -webkit-box-align:center;
-  position: relative;
-  margin: 0;
-  padding: 10px 0;
-  border-bottom: 1px dotted #d3d3d3;
+.sum-of-value-wrap{
+  width:550px;
+  padding-left:20px;
+  display:flex;
+  flex-wrap: wrap;
 }
 .balls-number{
   display: block;
@@ -124,16 +140,13 @@ export default {
   color: #ee661f;
   border-color:#ee661f;
 }
-.balls-wrap .balls-number-active{
+.sum-of-value-wrap .balls-number-active{
   background:#ee661f;
   color:#fff;
 }
-.balls-title{
-  color:#555;
-  padding:5px 20px;
-}
 .balls-oprate{
   margin-left:30px;
+  text-align:left;
 }
 .balls-oprate em{
   font-style:normal;
@@ -158,6 +171,7 @@ export default {
 }
 .bets-detail{
   margin-top:20px;
+  color:#000
 }
 .bets-num{
   color:#A68F4C;
@@ -169,5 +183,4 @@ export default {
   font-size:19px;
 }
 </style>
-
 

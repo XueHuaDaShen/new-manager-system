@@ -1,17 +1,15 @@
 <template>
-  <div>
-    <div class="footer">
-      <div class="container">
-        <div class="footer-top"><img src="../img/logo.png"></div>
-        <div class="footer-cen">
-          <span>必赢品牌</span>
-          <span>帮助中心</span>
-          <span>联系我们</span>
-          <span>手机客户端</span>
-          <span>防劫持教程</span>
-        </div>
-        <div class="footer-bot">© 2018 必赢游戏版权所有柬埔寨政府合法博彩牌照认证</div>
+  <div class="footer">
+    <div class="container">
+      <div class="footer-top"><img src="../img/logo.png"></div>
+      <div class="footer-cen">
+        <span>必赢品牌</span>
+        <span>帮助中心</span>
+        <span>联系我们</span>
+        <span>手机客户端</span>
+        <span>防劫持教程</span>
       </div>
+      <div class="footer-bot">© 2018 必赢游戏版权所有柬埔寨政府合法博彩牌照认证</div>
     </div>
   </div>
 </template>

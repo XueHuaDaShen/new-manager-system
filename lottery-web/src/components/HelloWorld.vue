@@ -7,7 +7,6 @@
       </div>
     </div>
     <myFooter></myFooter>
-    
   </div>
 </template>
 
@@ -39,5 +38,9 @@ export default {
 .content{
   width:1024px;
   margin:0 auto;
+}
+.hello{
+  width:100%;
+  height:100%;
 }
 </style>
