@@ -11,6 +11,12 @@ export default {
     })
     return bets * unit
   },
+  pos (arrs) {
+    const bets = arrs.reduce(function (p, c) {
+      return p + c
+    })
+    return bets
+  },
   group (arrs) {
     const bets = arrs.reduce(function (p, c) {
       const value = Number(c)
@@ -22,7 +28,7 @@ export default {
     })
     return bets * arrs.length
   },
-  groupSelectOne (len, count) {
+  groupSelectOne (len, count, unit) {
     var bets
     if (len < count) {
       bets = 0
@@ -33,7 +39,7 @@ export default {
         bets = (m *= (len - i)) / (n *= (i + 1))
       }
     }
-    return bets
+    return bets * unit
   },
   groupSelectTwoNum (arr1, arr2, num) {
     var bets = 0
@@ -54,9 +60,10 @@ export default {
     }
     return bets
   },
-  sunOfValue (betsArr) {
+  sunOfValue (betsArr, star) {
     var arr = []
-    for (var i = 0; i < 1000; i++) {
+    let count = Math.pow(10, star)
+    for (var i = 0; i < count; i++) {
       arr.push(i)
     }
     var newArr = []
@@ -82,20 +89,34 @@ export default {
     }
     return n
   },
-  groupSunOfValue (betsArr) {
+  groupSunOfValue (betsArr, star) {
     var arr = []
-    for (var i = 1; i < 1000; i++) {
+    let count = Math.pow(10, star)
+    for (let i = 1; i < count; i++) {
       var val = i.toString().split('')
-      if (val[0] === val[1] && val[0] === val[2]) {
-        // console.log(i)
-        continue
+      if (count === 1000) {
+        if (val[0] === val[1] && val[2]) {
+          // console.log(i)
+          continue
+        }
+        if (i < 10) {
+          arr.push('00' + i)
+        } else if (i < 100) {
+          arr.push('0' + i)
+        } else {
+          arr.push(i)
+        }
+      } else if (count === 100) {
+        if (val[0] === val[1]) {
+          // console.log(i)
+          continue
+        }
+        if (i < 10) {
+          arr.push('0' + i)
+        } else if (i < 100) {
+          arr.push(i)
+        }
       }
-      if (i < 10) {
-        i = '00' + i
-      } else if (i < 100) {
-        i = '0' + i
-      }
-      arr.push(i)
     }
     var newArr = []
     arr.filter(function (v) {
@@ -134,15 +155,24 @@ export default {
     }
     return n
   },
-  dValue (betsArr) {
+  dValue (betsArr, star) {
     var arr = []
-    for (var i = 0; i < 1000; i++) {
-      if (i < 10) {
-        arr.push('00' + i)
-      } else if (i < 100) {
-        arr.push('0' + i)
-      } else {
-        arr.push(i)
+    let count = Math.pow(10, star)
+    for (var i = 0; i < count; i++) {
+      if (count === 1000) {
+        if (i < 10) {
+          arr.push('00' + i)
+        } else if (i < 100) {
+          arr.push('0' + i)
+        } else {
+          arr.push(i)
+        }
+      } else if (count === 100) {
+        if (i < 10) {
+          arr.push('0' + i)
+        } else if (i < 100) {
+          arr.push(i)
+        }
       }
     }
     var newArr = []
@@ -162,5 +192,109 @@ export default {
       }
     }
     return n
+  },
+  valueEnd (betsArr) {
+    return betsArr.length
+  },
+  guts (betsArr, star) {
+    var arr = []
+    let count = Math.pow(10, star)
+    if (betsArr.length === 0) return 0
+    for (let i = 1; i < count; i++) {
+      var val = i.toString().split('')
+      if (count === 1000) {
+        if (val[0] === val[1] && val[2]) {
+          // console.log(i)
+          continue
+        }
+        if (i < 10) {
+          arr.push('00' + i)
+        } else if (i < 100) {
+          arr.push('0' + i)
+        } else {
+          arr.push(i)
+        }
+      } else if (count === 100) {
+        if (val[0] === val[1]) {
+          // console.log(i)
+          continue
+        }
+        if (i < 10) {
+          arr.push('0' + i)
+        } else if (i < 100) {
+          arr.push(i)
+        }
+      }
+    }
+    var newArr = []
+    arr.filter(function (v) {
+      var numArr = v.toString().split('')
+      var newNum = numArr.sort(function (a, b) {
+        return a - b
+      }).join('')
+      newArr.push(newNum)
+    })
+    var arr1 = []
+    for (let i in newArr) {
+      if (arr1.indexOf(newArr[i]) < 0) {
+        arr1.push(newArr[i])
+      }
+    }
+    var n = 0
+    for (let i in arr1) {
+      if (arr1[i].toString().split('').indexOf(betsArr[0].toString()) > -1) {
+        n++
+      }
+    }
+    return n
+  },
+  optionalOne (betsArr) {
+    var n = 0
+    var len = 0
+    var r = 0
+    for (var i = 0; i < betsArr.length; i++) {
+      len = 0
+      for (var j = i + 1; j < betsArr.length; j++) {
+        len += betsArr[j]
+      }
+      n = betsArr[i] * len
+      r += n
+      // console.log(n)
+    }
+    return r
+  },
+  optionalTwo (betsArr) {
+    var n = 0
+    var len = 0
+    var r = 0
+    for (var i = 0; i < betsArr.length; i++) {
+      for (var k = i + 1; k < betsArr.length; k++) {
+        len = 0
+        for (var j = k + 1; j < betsArr.length; j++) {
+          len += betsArr[j]
+        }
+        n = (betsArr[i] * betsArr[k]) * len
+        r += n
+      }
+    }
+    return r
+  },
+  optionalThree (betsArr) {
+    var n = 0
+    var len = 0
+    var r = 0
+    for (var i = 0; i < betsArr.length; i++) {
+      for (var k = i + 1; k < betsArr.length; k++) {
+        for (var m = k + 1; m < betsArr.length; m++) {
+          len = 0
+          for (var j = m + 1; j < betsArr.length; j++) {
+            len += betsArr[j]
+          }
+          n = (betsArr[i] * betsArr[k] * betsArr[m]) * len
+          r += n
+        }
+      }
+    }
+    return r
   }
 }

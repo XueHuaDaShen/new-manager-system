@@ -40,7 +40,7 @@ img{
 }
 .footer-cen span{
   margin-right:30px;
-  font-size:16px;
+  font-size:14px;
 }
 .footer-bot{
   text-align:left;

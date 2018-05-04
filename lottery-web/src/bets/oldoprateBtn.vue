@@ -24,6 +24,7 @@ export default {
       type: Number
     },
     ballsArr: {
+      type: Array,
       required: false
     }
   },
